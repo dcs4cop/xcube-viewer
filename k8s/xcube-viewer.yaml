@@ -1,0 +1,86 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: xcube-viewer-ingress
+  namespace: xcube
+  annotations:
+    # use the shared ingress-nginx
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+    - secretName: tls-secret
+      hosts:
+      - xcube.bc.com
+  rules:
+    - host: xcube.bc.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: xcube-viewer
+              servicePort: 80
+
+---
+# xcube viewer
+kind: Service
+apiVersion: v1
+metadata:
+  name: xcube-viewer
+  namespace: xcube
+spec:
+  selector:
+    app: xcube-viewer
+  ports:
+    - protocol: "TCP"
+      name: http
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xcube-viewer
+  namespace: xcube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xcube-viewer
+  template:
+    metadata:
+      labels:
+        app: xcube-viewer
+        track: stable
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: xcube-viewer
+          image: "quay.io/bcdev/xcube-viewer:0.4.5"
+          ports:
+            - name: http
+              containerPort: 80
+          #imagePullPolicy: Always
+          #   - name: health
+          #     containerPort: 81
+          # resources:
+          #   limits:
+          #     cpu: 0.2
+          #     memory: "10Mi"
+          # livenessProbe:
+          #   httpGet:
+          #     path: /healthz
+          #     port: 81
+          #     scheme: HTTP
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 15
+          #   timeoutSeconds: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /readiness
+          #     port: 81
+          #     scheme: HTTP
+          #   initialDelaySeconds: 5
+          #   timeoutSeconds: 1
