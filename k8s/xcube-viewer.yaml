@@ -10,10 +10,10 @@ spec:
   tls:
     - secretName: tls-secret
       hosts:
-      - xcube.bc.com
+        - dev.xcube.brockmann-consult.de
   rules:
-    - host: dev.xcube.brockmann-consult.de
-      http:
+#    - host: dev.xcube.brockmann-consult.de
+    - http:
         paths:
           - path: /
             backend:
