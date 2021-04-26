@@ -62,6 +62,12 @@ spec:
           ports:
             - name: http
               containerPort: 80
+          env:
+            - name: REACT_APP_BRANDING
+              value: default
+            - name: REACT_APP_XCUBE_API
+              value: https://dev.xcube.brockmann-consult.de/server
+              
           #imagePullPolicy: Always
           #   - name: health
           #     containerPort: 81
