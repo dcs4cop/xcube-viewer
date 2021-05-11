@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: xcube-api
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: xcube-api
+  ports:
+    - protocol: "TCP"
+      name: http
+      port: 80
+      targetPort: 8080
+  type: ClusterIP

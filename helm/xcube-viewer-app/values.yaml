@@ -1,0 +1,14 @@
+namespace: 'xcube-viewer-app'
+
+hostName: 'dev.xcube.brockmann-consult.de'
+
+tlsSecretName: 'tls-secret'
+
+imagePullSecretsName: 'regcred'
+
+viewerImage: 'quay.io/bcdev/xcube-viewer:0.4.5'
+# TODO: where to put this one?
+viewerConfigPath: 'demo/viewer-config.yml'
+
+apiImage: 'quay.io/bcdev/xcube:0.8.0.dev7'
+apiConfigPath: 'demo/config.yml'

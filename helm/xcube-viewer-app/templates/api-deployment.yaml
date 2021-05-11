@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xcube-server
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: xcube-api
+  template:
+    metadata:
+      labels:
+        app: xcube-api
+        track: stable
+    spec:
+      containers:
+        - name: xcube-api
+          image: {{ .Values.apiImage }}
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          ports:
+            - name: http
+              containerPort: 8080
+          command:
+            - "/bin/bash"
+            - "-c"
+            - "source activate xcube && xcube --traceback serve -v --address 0.0.0.0 --port 8080 --revprefix api -c /xcube/api/resources/{{ .Values.apiConfigPath }}"
+          volumeMounts:
+            - name: xcube-data-path
+              mountPath: /xcube/api/resources
+      volumes:
+        - name: xcube-data-path
+          hostPath:
+            path: /mnt/s3data
+      # imagePullSecrets:
+      #   - name: regcred
+      # imagePullPolicy: Always
+      #   - name: health
+      #     containerPort: 81
+      # resources:
+      #   limits:
+      #     cpu: 0.2
+      #     memory: "10Mi"
+      # livenessProbe:
+      #   httpGet:
+      #     path: /healthz
+      #     port: 81
+      #     scheme: HTTP
+      #   initialDelaySeconds: 5
+      #   periodSeconds: 15
+      #   timeoutSeconds: 5
+      # readinessProbe:
+      #   httpGet:
+      #     path: /readiness
+      #     port: 81
+      #     scheme: HTTP
+      #   initialDelaySeconds: 5
+      #   timeoutSeconds: 1
