@@ -19,6 +19,7 @@ spec:
             backend:
               serviceName: xcube-api
               servicePort: 80
+# TODO: how to route to S3 bucket?
 #    - http:
 #        paths:
 #          - path: /config.json

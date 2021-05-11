@@ -26,10 +26,10 @@ spec:
           command:
             - "/bin/bash"
             - "-c"
-            - "source activate xcube && xcube --traceback serve -v --address 0.0.0.0 --port 8080 --revprefix api -c /xcube/api/resources/{{ .Values.apiConfigPath }}"
+            - "source activate xcube && xcube --traceback serve -v --address 0.0.0.0 --port 8080 --revprefix api -c /xcube/resources/{{ .Values.apiConfigPath }}"
           volumeMounts:
             - name: xcube-data-path
-              mountPath: /xcube/api/resources
+              mountPath: /xcube/resources
       volumes:
         - name: xcube-data-path
           hostPath:

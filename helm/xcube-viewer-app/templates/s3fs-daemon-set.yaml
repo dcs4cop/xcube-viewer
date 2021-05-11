@@ -1,3 +1,4 @@
+# TODO: because this is a common DaemonSet (namespace "default"), is it right to put it in this chart?
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
