@@ -1,4 +1,7 @@
-# TODO: because this is a common DaemonSet (namespace "default"), is it right to put it in this chart?
+# TODO: because this is a common DaemonSet (namespace "default"),
+#   is it right to put it in this chart?
+# TODO: on AWS we could use IAM to get rid of the Secret used here,
+#   i.e. pass a "pod itentity" to the pod.
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:

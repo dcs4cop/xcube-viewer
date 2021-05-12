@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: xcube-viewer-ingress
+  name: xcube-api-ingress
   namespace: {{ .Values.namespace }}
   annotations:
     # use the shared ingress-nginx
@@ -18,17 +18,4 @@ spec:
           - path: /api/(.*)
             backend:
               serviceName: xcube-api
-              servicePort: 80
-# TODO: how to route to S3 bucket?
-#    - http:
-#        paths:
-#          - path: /config.json
-#            backend:
-#              serviceName: xcube-api
-#              servicePort: 80
-    - http:
-        paths:
-          - path: /
-            backend:
-              serviceName: xcube-viewer
               servicePort: 80

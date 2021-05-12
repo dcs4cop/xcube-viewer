@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xcube-viewer-config
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 2
+  # TODO: revisit!
+  # podAntiAffinity: true
+  selector:
+    matchLabels:
+      app: xcube-viewer-config
+  template:
+    metadata:
+      labels:
+        app: xcube-viewer-config
+        track: stable
+    spec:
+      containers:
+        - name: xcube-api
+          image: {{ .Values.viewerConfigImage }}
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          ports:
+            - name: http
+              containerPort: 8000
+          command:
+            - "python"
+            - "-m"
+            - "http.server"
+            - "-d"
+            - "/xcube/resources/{{ .Values.viewerConfigPath }}"
+          volumeMounts:
+            - name: xcube-data-path
+              mountPath: /xcube/resources
+      volumes:
+        - name: xcube-data-path
+          hostPath:
+            path: /mnt/s3data

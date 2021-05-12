@@ -14,6 +14,7 @@ spec:
         app: xcube-viewer
         track: stable
     spec:
+      # TODO: remove because image is public
       imagePullSecrets:
         - name: {{ .Values.imagePullSecretsName }}
       containers:

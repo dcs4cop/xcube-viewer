@@ -1,13 +1,17 @@
-namespace: 'xcube-viewer-app'
-
 hostName: 'dev.xcube.brockmann-consult.de'
 
+# Note, the namespace provided here must already exist.
+namespace: 'xcube-viewer-app'
+
+# Note, tlsSecretName should be created together with namespace
 tlsSecretName: 'tls-secret'
 imagePullSecretsName: 'regcred'
 
 viewerImage: 'quay.io/bcdev/xcube-viewer:0.4.5'
-# TODO: use this in templates/ingres.yaml
+# TODO: use this in templates/viewer-ingress.yaml
 viewerConfigPath: 'demo/viewer-config.json'
+
+viewerConfigImage: 'python:3.9-alpine'
 
 apiImage: 'quay.io/bcdev/xcube:0.8.0.dev7'
 apiConfigPath: 'demo/config.yml'

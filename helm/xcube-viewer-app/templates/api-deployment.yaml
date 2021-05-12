@@ -1,10 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: xcube-server
+  name: xcube-api
   namespace: {{ .Values.namespace }}
 spec:
   replicas: 2
+  # TODO: revisit!
+  # podAntiAffinity: true
   selector:
     matchLabels:
       app: xcube-api
