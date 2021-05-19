@@ -47,6 +47,9 @@ jobs:
     runs-on: [ubuntu-latest]
     needs: test
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        
       - name: Build and push Docker
         id: docker_build
         uses: docker/build-push-action@v2
