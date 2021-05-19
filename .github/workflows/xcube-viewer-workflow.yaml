@@ -17,6 +17,9 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
 
+    - name: Checkout repo
+        uses: actions/checkout@v2
+
       - name: Cache node modules
         uses: actions/cache@v2
         env:
@@ -26,9 +29,6 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
-
-      - name: Checkout repo
-        uses: actions/checkout@v2
 
       - name: Use Node.js
         uses: actions/setup-node@v1
@@ -43,4 +43,14 @@ jobs:
 
       - name: Test
         run: yarn test
-        #continue-on-error: true
+        continue-on-error: true
+
+  build:
+      - name: Build and push Docker
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: false
+          tags: xcube-viewer:latest
