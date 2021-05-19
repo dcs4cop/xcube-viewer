@@ -15,36 +15,37 @@ jobs:
   test:
     runs-on: [ubuntu-latest]
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
 
-    - name: Checkout repo
-      uses: actions/checkout@v2
+        - name: Cache node modules
+          uses: actions/cache@v2
+          env:
+            cache-name: cache-node-modules
+          with:
+            path: ~/.npm
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+            restore-keys: |
+              ${{ runner.os }}-build-${{ env.cache-name }}-
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
+        - name: Use Node.js
+          uses: actions/setup-node@v1
+          with:
+            node-version: '14.x'
 
-      - name: Use Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
+        - name: Install Yarn
+          run: npm install yarn -g
 
-      - name: Install Yarn
-        run: npm install yarn -g
+        - name: Install dependencies
+          run: yarn
 
-      - name: Install dependencies
-        run: yarn
-
-      - name: Test
-        run: yarn test
-        continue-on-error: true
+        - name: Test
+          run: yarn test
+          continue-on-error: true
 
   build:
+    runs-on: [ubuntu-latest]
+    steps:
       - name: Build and push Docker
         id: docker_build
         uses: docker/build-push-action@v2
