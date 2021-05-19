@@ -45,6 +45,7 @@ jobs:
 
   build:
     runs-on: [ubuntu-latest]
+    needs: test
     steps:
       - name: Build and push Docker
         id: docker_build
