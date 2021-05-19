@@ -11,14 +11,13 @@ on:
     branches:
       - develop
 
-
 jobs:
   test:
     runs-on: [ubuntu-latest]
     steps:
 
     - name: Checkout repo
-        uses: actions/checkout@v2
+      uses: actions/checkout@v2
 
       - name: Cache node modules
         uses: actions/cache@v2
