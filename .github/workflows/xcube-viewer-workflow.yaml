@@ -12,7 +12,7 @@ on:
       - develop
 
 env:
-  NAMESPACE: xcube
+  NAMESPACE: xc-viewer-app
   APP_NAME: xcube-viewer
   HELM_TEMPLATE_DIR: ./k8s/helm/xcube-viewer
   CLUSTER_NAME: xc-dev
