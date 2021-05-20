@@ -80,16 +80,16 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-central-1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
 
-    - name: Set K8s Context
-      run: aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }}
-      
+      - name: Set K8s Context
+        run: aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }}
+        
       - name: Set up Helm
         uses: azure/setup-helm@v1
         with:
