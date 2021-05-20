@@ -11,8 +11,8 @@ image:
   tag: "ci-build"
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "xcube-viewer"
+fullnameOverride: "xcube-viewer"
 
 serviceAccount:
   # Specifies whether a service account should be created
