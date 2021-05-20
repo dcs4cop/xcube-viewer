@@ -11,6 +11,12 @@ on:
     branches:
       - develop
 
+env:
+  NAMESPACE: xcube
+  APP_NAME: xcube-viewer
+  HELM_TEMPLATE_DIR: ./k8s/helm/xcube-viewer
+  CLUSTER_NAME: xc-dev
+
 jobs:
   test:
     runs-on: [ubuntu-latest]
@@ -46,10 +52,18 @@ jobs:
   build:
     runs-on: [ubuntu-latest]
     needs: test
+    if: github.event_name == 'push'
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-        
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          registry: quay.io
+          username: ${{ secrets.REG_USERNAME }}
+          password: ${{ secrets.REG_PASSWORD }}
+
       - name: Build and push Docker
         id: docker_build
         uses: docker/build-push-action@v2
@@ -57,4 +71,37 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: false
-          tags: xcube-viewer:latest
+          tags: bcdev/xcube-viewer:ci-build
+  deploy:
+    runs-on: [ubuntu-latest]
+    needs: build
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-central-1
+
+    - name: Set K8s Context
+      run: aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }}
+      
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.4.0
+
+      - name: Set Tag version
+        run: |
+          mv Chart.yaml ChartOld.yaml
+          sed '/^appVersion: /s/.*$/appVersion: ${{ github.sha }}/' ChartOld.yaml > Chart.yaml
+          cat Chart.yaml
+        working-directory: ${{ env.HELM_TEMPLATE_DIR }}
+
+      - name: Deploy to EKS
+        run: helm upgrade --install ${{ env.APP_NAME }} . --namespace ${{ env.NAMESPACE }}
+        working-directory: ${{ env.HELM_TEMPLATE_DIR }}
