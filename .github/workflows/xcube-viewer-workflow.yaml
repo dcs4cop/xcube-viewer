@@ -16,6 +16,7 @@ env:
   HELM_TEMPLATE_DIR: ./k8s/helm/xcube-viewer
   CLUSTER_NAME: xc-dev
   TEST_CLUSTER_NAME: xc-test
+  DOCKER_REGISTRY: quay.io
 
 jobs:
   test:
@@ -60,7 +61,7 @@ jobs:
       - name: Login to Quay
         uses: docker/login-action@v1
         with:
-          registry: quay.io
+          registry: ${{ env.DOCKER_REGISTRY }}
           username: ${{ secrets.QUAY_REG_USERNAME }}
           password: ${{ secrets.QUAY_REG_PASSWORD }}
 
@@ -71,7 +72,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: bcdev/xcube-viewer:ci-build
+          tags: ${{ env.DOCKER_REGISTRY }}/bcdev/xcube-viewer:ci-build
   deploy:
     runs-on: [ubuntu-latest]
     needs: build
