@@ -1,36 +1,24 @@
 # xcube-viewer
 
-A simple viewer component for [xcube](https://xcube.readthedocs.io/).
+A simple viewer component for [xcube](https://xcube.readthedocs.io/).  
+You can explore the functionality of 
+xcube-viewer in the Brockmann Consult GmbH demo viewer: https://bc-viewer.brockmann-consult.de
 
+You want some guidance how to use it? Checkout our [user guide](https://xcube.readthedocs.io/en/latest/viewer.html#). 
 ![xcube-viewer](./doc/xcube-viewer.jpg)
 
 ## Run it
 
-1. Install [xcube](https://github.com/dcs4cop/xcube) and run server in demo mode
-2. Install and start `xcube-viewer` with demo configuration
+Before running xcube-viewer on your machine, you need a xcube server running. 
 
-### `xcube`
+### Installing `xcube` and running demo server
 
-`xcube` one-time install:
-
-    $ git clone https://github.com/dcs4cop/xcube.git
-    $ cd xcube
-    $ conda env create
-    $ conda activate xcube
-    $ python setup.py develop  
-
-`xcube` update and run server:
-
-    $ cd xcube
-    $ git pull
-    $ conda activate xcube  
-    $ xcube serve --verbose --traceperf --config xcube/examples/serve/demo/config.yml  
-
-If errors occur, you may need to update the environment:
-
-    $ conda env update
-
-### `xcube-viewer`
+Follow the [installation guide](https://xcube.readthedocs.io/en/latest/installation.html#installation) to install xcube.  
+Start xcube demo server with  
+`$ xcube serve --verbose --traceperf --config xcube/examples/serve/demo/config.yml`  
+For more information about xcube server configuration file, have a look at the 
+[xcube server documentation](https://xcube.readthedocs.io/en/latest/cli/xcube_serve.html).
+### Installing `xcube-viewer` and running demo configuration
 
 Checkout `xcube-viewer` sources:
 
