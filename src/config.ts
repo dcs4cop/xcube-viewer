@@ -93,7 +93,7 @@ export class Config {
         server.id = appParams.get('serverId') || server.id;
         server.name = appParams.get('serverName') || server.name;
         server.url = appParams.get('serverUrl') || server.url;
-        const compact = parseInt(appParams.get('compact') || '0') != 0;
+        const compact = parseInt(appParams.get('compact') || '0') !== 0;
         const branding = parseBranding(
             {
                 ...rawDefaultConfig.branding,

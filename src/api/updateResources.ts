@@ -25,20 +25,28 @@
 import { callJsonApi, makeRequestInit, makeRequestUrl } from './callApi';
 
 
-export function updateResources(apiServerUrl: string, accessToken: string | null): Promise<boolean> {
+export function updateResources(apiServerUrl: string, accessToken: string | null): Promise<string | null> {
+    return callUpdate(apiServerUrl, "PUT", accessToken);
+}
+
+export function getLastResourcesUpdate(apiServerUrl: string, accessToken: string | null): Promise<string | null> {
+    return callUpdate(apiServerUrl, "GET", accessToken);
+}
+
+function callUpdate(apiServerUrl: string, method: string, accessToken: string | null): Promise<string | null> {
     const url = makeRequestUrl(`${apiServerUrl}/maintenance/update`, []);
-    const init = makeRequestInit(accessToken);
+    const init = {...makeRequestInit(accessToken), method};
     try {
         return callJsonApi<boolean>(url, init)
-            .then(() => {
-                return true;
+            .then((result: any) => {
+                return result["modification_time"] || null;
             })
             .catch(error => {
                 console.error(error);
-                return false;
+                return null;
             });
     } catch (error) {
         console.error(error);
-        return Promise.resolve(false);
+        return Promise.resolve(null);
     }
 }

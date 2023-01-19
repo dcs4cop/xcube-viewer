@@ -116,12 +116,12 @@ export function _updateServerInfo(serverInfo: ApiServerInfo): UpdateServerInfo {
 export const UPDATE_RESOURCES = 'UPDATE_RESOURCES';
 
 export function updateResources() {
-    return (dispatch: Dispatch<UpdateDatasets | SelectDataset | AddActivity | RemoveActivity | MessageLogAction>, getState: () => AppState) => {
+    return (dispatch: Dispatch<AddActivity | RemoveActivity>, getState: () => AppState) => {
         const apiServer = selectedServerSelector(getState());
         dispatch(addActivity(UPDATE_RESOURCES, i18n.get('Updating resources')));
         api.updateResources(apiServer.url, getState().userAuthState.accessToken)
-            .then(ok => {
-                if (ok) {
+            .then(updateTime => {
+                if (updateTime !== null) {
                     window.location.reload();
                 }
             })
@@ -131,6 +131,22 @@ export function updateResources() {
     }
 }
 
+let _lastServerUpdateTime: string | null = null;
+
+export function checkServerUpdate() {
+    return (dispatch: Dispatch, getState: () => AppState) => {
+        const apiServer = selectedServerSelector(getState());
+        api.getLastResourcesUpdate(apiServer.url, getState().userAuthState.accessToken)
+            .then(updateTime => {
+                if (updateTime !== null) {
+                    if (_lastServerUpdateTime !== null && _lastServerUpdateTime != updateTime) {
+                        console.log(`>>> server configuration updated at ${updateTime}`);
+                    }
+                    _lastServerUpdateTime = updateTime;
+                }
+            });
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

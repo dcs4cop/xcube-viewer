@@ -31,7 +31,7 @@ import thunk from 'redux-thunk';
 
 import './index.css';
 import { changeLocale } from './actions/controlActions';
-import { syncWithServer } from './actions/dataActions';
+import { syncWithServer, checkServerUpdate } from './actions/dataActions';
 import { Config } from './config';
 import App from './connected/App';
 import { appReducer } from './reducers/appReducer';
@@ -43,6 +43,8 @@ Config.load().then(() => {
     const store = Redux.createStore(appReducer, Redux.applyMiddleware(thunk, logger));
 
     store.dispatch(changeLocale(store.getState().controlState.locale) as any);
+
+    window.setInterval(() => store.dispatch(checkServerUpdate() as any), 1000);
 
     if (store.getState().controlState.privacyNoticeAccepted) {
         store.dispatch(syncWithServer() as any);
