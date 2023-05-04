@@ -32,6 +32,35 @@ import { Options as OlTileLayerOptions } from 'ol/layer/BaseTile';
 type Layer = OlVectorLayer<OlVectorSource> | OlTileLayer<OlTileSource>;
 type LayerOptions = OlVectorLayerOptions<any> | OlTileLayerOptions<any>;
 
+
+export function processTileSourceHandlers(layer: OlTileLayer<OlTileSource>,
+                                          prevProps: OlTileLayerOptions<any>,
+                                          nextProps: OlTileLayerOptions<any>) {
+    let source = layer.getSource();
+    if (Boolean(source)) {
+        updateTileSourceHandler(source!, prevProps, nextProps, "tileloadstart", "onTileLoadStart");
+        updateTileSourceHandler(source!, prevProps, nextProps, "tileloadend", "onTileLoadEnd");
+        updateTileSourceHandler(source!, prevProps, nextProps, "tileloaderror", "onTileLoadError");
+    }
+}
+
+function updateTileSourceHandler(source: OlTileSource,
+                             prevProps: OlTileLayerOptions<any>,
+                             nextProps: OlTileLayerOptions<any>,
+                             eventType: "tileloadstart" | "tileloadend" | "tileloaderror",
+                             propertyName: "onTileLoadStart" | "onTileLoadEnd" | "onTileLoadError") {
+    const prevSourceHandler = prevProps[propertyName];
+    const nextSourceHandler = nextProps[propertyName];
+    if (prevSourceHandler !== nextSourceHandler) {
+        if (Boolean(prevSourceHandler)) {
+            source.un(["tileloadstart"], prevSourceHandler as any);
+        }
+        if (Boolean(nextSourceHandler)) {
+            source.on(["tileloadstart"], nextSourceHandler as any);
+        }
+    }
+}
+
 export function processLayerProperties(layer: Layer,
                                        prevProps: LayerOptions,
                                        nextProps: LayerOptions) {

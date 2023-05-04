@@ -25,7 +25,7 @@
 import * as React from 'react';
 import { default as OlMap } from 'ol/Map';
 import { default as OlTileLayer } from 'ol/layer/Tile';
-import { default as OlTileSource } from 'ol/source/Tile';
+import { default as OlTileSource, TileSourceEvent as OlTileSourceEvent} from 'ol/source/Tile';
 import { default as OlTileGrid } from 'ol/tilegrid/TileGrid';
 import { default as OlUrlTileSource } from 'ol/source/UrlTile';
 import { default as OlXYZSource } from 'ol/source/XYZ';
@@ -33,7 +33,7 @@ import { default as OlOSMSource } from 'ol/source/OSM';
 import { Options as OlTileLayerOptions } from 'ol/layer/BaseTile';
 
 import { MapComponent, MapComponentProps } from '../MapComponent';
-import { processLayerProperties } from "./common";
+import { processLayerProperties, processTileSourceHandlers } from "./common";
 
 const DEBUG = false;
 
@@ -66,6 +66,9 @@ export function OSMBlackAndWhite(): JSX.Element {
 
 
 interface TileProps extends MapComponentProps, OlTileLayerOptions<OlTileSource> {
+    onTileLoadStart?: (event: OlTileSourceEvent) => any;
+    onTileLoadEnd?: (event: OlTileSourceEvent) => any;
+    onTileLoadError?: (event: OlTileSourceEvent) => any;
 }
 
 
@@ -145,6 +148,7 @@ export class Tile extends MapComponent<OlTileLayer<OlTileSource>, TileProps> {
                 trace("--> Updated source (check, is it still flickering?)")
             }
         }
+        processTileSourceHandlers(layer, prevProps, this.props);
         processLayerProperties(layer, prevProps, this.props);
         return layer;
     }

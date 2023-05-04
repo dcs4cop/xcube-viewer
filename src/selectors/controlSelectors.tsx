@@ -76,6 +76,8 @@ import { makeRequestUrl } from '../api/callApi';
 import { MAP_OBJECTS } from '../states/controlState';
 import { GEOGRAPHIC_CRS, WEB_MERCATOR_CRS } from '../model/proj';
 import { ColorBar, ColorBars, parseColorBar } from '../model/colorBar';
+import { TileSourceEvent as OlTileSourceEvent } from "ol/source/Tile";
+import { updateTileProgress } from "../actions/mapActions";
 
 export const selectedDatasetIdSelector = (state: AppState) => state.controlState.selectedDatasetId;
 export const selectedVariableNameSelector = (state: AppState) => state.controlState.selectedVariableName;
@@ -96,6 +98,7 @@ export const userPlacesFormatNameSelector = (state: AppState) => state.controlSt
 export const userPlacesFormatOptionsCsvSelector = (state: AppState) => state.controlState.userPlacesFormatOptions.csv;
 export const userPlacesFormatOptionsGeoJsonSelector = (state: AppState) => state.controlState.userPlacesFormatOptions.geojson;
 export const userPlacesFormatOptionsWktSelector = (state: AppState) => state.controlState.userPlacesFormatOptions.wkt;
+export const updateTileProgressSelector = () => updateTileProgress;
 
 
 export const selectedDatasetSelector = createSelector(
@@ -488,7 +491,8 @@ function getTileLayer(layerId: string,
                       timeAnimationActive: boolean,
                       mapProjection: string,
                       attributions: string[] | null,
-                      imageSmoothing: boolean) {
+                      imageSmoothing: boolean,
+                      updateTileProgress: (event: OlTileSourceEvent) => unknown) {
     if (time !== null) {
         let timeString;
         if (timeDimension) {
@@ -532,6 +536,9 @@ function getTileLayer(layerId: string,
             source={source}
             zIndex={10}
             opacity={opacity}
+            onTileLoadStart={updateTileProgress}
+            onTileLoadEnd={updateTileProgress}
+            onTileLoadError={updateTileProgress}
         />
     );
 }
@@ -679,6 +686,7 @@ export const selectedDatasetRgbLayerSelector = createSelector(
     mapProjectionSelector,
     selectedDatasetAttributionsSelector,
     imageSmoothingSelector,
+    updateTileProgressSelector,
     (server: ApiServerConfig,
      datasetId,
      showRgbLayer: boolean,
@@ -689,7 +697,8 @@ export const selectedDatasetRgbLayerSelector = createSelector(
      timeAnimationActive: boolean,
      mapProjection: string,
      attributions: string[] | null,
-     imageSmoothing: boolean
+     imageSmoothing: boolean,
+     updateTileProgress: (event: OlTileSourceEvent) => unknown,
     ): MapElement => {
         if (!showRgbLayer || !rgbSchema) {
             return null;
@@ -709,7 +718,8 @@ export const selectedDatasetRgbLayerSelector = createSelector(
             timeAnimationActive,
             mapProjection,
             attributions,
-            imageSmoothing);
+            imageSmoothing,
+            updateTileProgress);
     }
 );
 

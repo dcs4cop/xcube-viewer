@@ -29,7 +29,40 @@ import { transformExtent as olProjTransformExtent } from 'ol/proj';
 import { default as OlSimpleGeometry } from 'ol/geom/SimpleGeometry';
 import { GEOGRAPHIC_CRS } from '../model/proj';
 import { MAP_OBJECTS } from '../states/controlState';
+import { Dispatch } from "redux";
+import { TileSourceEvent as OlTileSourceEvent } from "ol/source/Tile";
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export type TileEventType = "tileloadstart" | "tileloadend" | "tileloaderror";
+export const UPDATE_TILE_PROGRESS = 'UPDATE_TILE_PROGRESS';
+
+export interface UpdateTileProgress {
+    type: typeof UPDATE_TILE_PROGRESS;
+    eventType: TileEventType;
+    tileKey: string;
+    tileCoord: number[];
+}
+
+export function updateTileProgress(event: OlTileSourceEvent) {
+    return (dispatch: Dispatch<UpdateTileProgress>) => {
+        dispatch(_updateTileProgress(
+            event.type as TileEventType,
+            event.tile.getKey(),
+            event.tile.getTileCoord(),
+        ));
+    };
+}
+
+export function _updateTileProgress(eventType: TileEventType,
+                                    tileKey: string,
+                                    tileCoord: number[]): UpdateTileProgress {
+    return {type: UPDATE_TILE_PROGRESS, eventType, tileKey, tileCoord};
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Side-effect actions
 
 // noinspection JSUnusedLocalSymbols
 export function renameUserPlaceInLayer(placeGroupId: string, placeId: string, newName: string) {
